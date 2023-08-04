@@ -1,0 +1,48 @@
+<div class="d-flex justify-content-end">
+  <button type="button" class="btn btn-main btn-sm mb-2" (click)="openFormModal()">{{'Add Fags' | translate}}</button>
+</div>
+<div class="row bottom-30">
+  <div class="col">
+    <div widget class="card">
+      <div class="card-header">
+        <span>{{'DATA TABLE' | translate}}</span>
+        <div class="widget-controls">
+          <a data-widgster="expand" href="#" class="transition"><i class="fa fa-chevron-down"></i></a>
+          <a data-widgster="collapse" href="#" class="transition"><i class="fa fa-chevron-up"></i></a>
+          <a data-widgster="fullscreen" href="#" class="transition"><i class="fa fa-expand"></i></a>
+          <a data-widgster="restore" href="#" class="transition"><i class="fa fa-compress"></i></a>
+        </div>
+      </div>
+      <div class="card-body position-relative widget-body">
+        <app-loader *ngIf="isLoading" class="d-flex justify-content-center"></app-loader>
+        <div class="table-responsive" *ngIf='!isLoading'>
+          <table class="table innerTable table-striped text-center">
+            <thead style="cursor: pointer;">
+              <th *ngFor='let item of tableColumns;let i=index'>
+                {{item.name |translate}}
+              </th>
+              <th>
+                {{'Controllers' | translate}}
+              </th>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of fagList">
+                <td *ngFor='let column of tableColumns'>
+                  {{
+                  user[column.key]
+                  }}
+                </td>
+                <td>
+                  <i class="fa btn fa-pencil ml-1" (click)='openFormModal(user)' aria-hidden="true"></i>
+                  <i *ngIf="fagList.length > 1" class="fa btn fa fa-trash" (click)='openDeleteModal(user)'
+                    aria-hidden="true">
+                  </i>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

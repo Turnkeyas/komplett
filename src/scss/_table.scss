@@ -1,0 +1,56 @@
+.innerTable {
+  width: 97%;
+  margin-left: 3%;
+  box-shadow: 1px 1px 5px 0px rgba(0, 0, 0, 0.25);
+
+  thead {
+    background-color: #344154;
+    color: white;
+  }
+
+  tr {
+    cursor: pointer;
+  }
+}
+
+.delete-icon {
+  cursor: pointer;
+}
+
+.table-footer {
+  background-color: #666666;
+  width: 100%;
+  height: 60px;
+
+  .disable {
+    color: gray;
+  }
+
+  .active {
+    background-color: #949495 !important;
+    color: white;
+  }
+
+  .pagination {
+    float: right;
+  }
+
+  .page-link {
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+  }
+
+  .total-record {
+    color: white;
+    font-size: 16px;
+  }
+}
+
+.pagination {
+  padding: 0 12px;
+  height: 50px;
+  overflow: hidden;
+  background-color: #424242;
+}

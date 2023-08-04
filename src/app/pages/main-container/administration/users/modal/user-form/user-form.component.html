@@ -1,0 +1,79 @@
+<div>
+  <div class="modal-header">
+    <h4 class="modal-title text-primary">{{isEditMode ? 'Update User': 'Add User' |translate }}</h4>
+  </div>
+
+  <div class="modal-body">
+    <form [formGroup]='userForm'>
+      <div class="form-group">
+        <label for="email">{{'Email' |translate}}</label>
+        <input id="email" class="form-control checking-field" [placeholder]="'Enter Email' | translate" type="text"
+          formControlName="email">
+        <ng-container *ngIf="controls.email.errors && controls.email.touched">
+          <span class="help-block text-danger" *ngIf="controls.email.errors.required">
+            {{ 'Email is required field' | translate}}
+          </span>
+        </ng-container>
+      </div>
+
+      <div class="form-group">
+        <label for="name">{{'Name' | translate}}</label>
+        <input id="name" class="form-control checking-field" [placeholder]="'Enter Name' | translate" type="text"
+          formControlName="name">
+        <ng-container *ngIf="controls.name.errors && controls.name.touched">
+          <span class="help-block text-danger" *ngIf="controls.name.errors.required">
+            {{ 'Name is required field' | translate}}
+          </span>
+        </ng-container>
+      </div>
+
+      <div class="form-group">
+        <li class="nav-item">
+          <div class="dropdown">
+            <div class="align-items-center">
+              <label for="categoryList" class="mb-0 mr-2">Select Role</label>
+              <a id="categoryList"
+                class="d-flex justify-content-between align-items-center category-selection dropdown-toggle form-control"
+                data-toggle="dropdown" role="button" aria-expanded="false">
+                <ng-container *ngFor="let list of rolesDropDownKeys">
+                  <ng-container *ngIf="list.isSelected">
+                    <span class="text-primary selected-value mr-1"> {{ list.name }} </span>
+                    <i class="fa fa-chevron-down text-primary" aria-hidden="true"></i>
+                  </ng-container>
+                </ng-container>
+              </a>
+
+              <ul class="dropdown-menu">
+                <a class="btn dropdown-item pr-3 pl-3" *ngFor="let list of rolesDropDownKeys"
+                  [ngClass]="{'active': list.isSelected}" (click)="onSelectionChange(list)">
+                  <span> {{ list.name }} </span>
+                </a>
+              </ul>
+            </div>
+          </div>
+        </li>
+      </div>
+
+      <div class="form-group" *ngIf='!isEditMode'>
+        <label for="password"> {{'Password for this user is' | translate}}:</label>
+        <input id="password" class="form-control" [value]="this.randomPassword" readonly="true">
+        <small class="text-primary">*This is auto generated password. User Can change it from profile setting.</small>
+      </div>
+    </form>
+  </div>
+
+  <div class="modal-footer">
+    <div class="row w-100 justify-content-end">
+      <div class="col-sm-auto px-0 mr-sm-3 mb-2">
+        <button type="button" class="submit-btn btn btn-primary btn-block" (click)='confirmClick()'
+          [disabled]='userForm.invalid'>
+          <span *ngIf="!isLoading"> {{isEditMode ? 'Update': 'Insert' |translate }}</span>
+          <i *ngIf="isLoading" class="fa fa-circle-o-notch fa-spin fa-fw fa-lg"></i>
+        </button>
+      </div>
+      <div class="col-sm-auto px-0">
+        <button type="button" class="btn btn-main btn-block" (click)="closeModal()">{{'Cancel' | translate }}</button>
+      </div>
+    </div>
+  </div>
+</div>

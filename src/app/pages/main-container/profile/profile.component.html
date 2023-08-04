@@ -1,0 +1,126 @@
+<div class="row">
+  <div class="col-6">
+    <div widget class="card">
+      <div class="card-header">
+        <span>{{'Edit User Details'| translate}}</span>
+        <div class="widget-controls">
+          <a data-widgster="expand" class="transition"><i class="fa fa-chevron-down"></i></a>
+          <a data-widgster="collapse" class="transition"><i class="fa fa-chevron-up"></i></a>
+          <a data-widgster="fullscreen" class="transition"><i class="fa fa-expand"></i></a>
+          <a data-widgster="restore" class="transition"><i class="fa fa-compress"></i></a>
+          <!-- <a data-widgster="close" class="transition"><i class="fa fa-times"></i></a> -->
+        </div>
+      </div>
+      <div class="card-body widget-body row">
+
+        <div class="col-12">
+          <div class="card-body">
+            <form [formGroup]='userForm'>
+              <div class="form-group">
+                <label for="email">{{'Email' |translate}}</label>
+                <input id="email" class="form-control checking-field" [placeholder]="'Enter Email' | translate"
+                  type="text" formControlName="email">
+              </div>
+
+              <div class="form-group">
+                <label for="name">{{'Name' | translate}}</label>
+                <input id="name" class="form-control checking-field" [placeholder]="'Enter Name' | translate"
+                  type="text" formControlName="name">
+                <ng-container *ngIf="controls.name.errors && controls.name.touched">
+                  <span class="help-block text-danger" *ngIf="controls.name.errors.required">
+                    {{ 'Name is required field' | translate}}
+                  </span>
+                </ng-container>
+              </div>
+
+              <!-- <div class="d-flex justify-content-between"> -->
+              <div class="form-group float-right">
+                <button type="submit" class="btn btn-main" [disabled]="!userForm.valid" (click)="onUpdateUser()">
+                  <span *ngIf="!isLoading">{{ 'Save' | translate}}</span>
+                  <i *ngIf="isLoading" class="fa fa-circle-o-notch fa-spin fa-fw fa-lg"></i>
+                </button>
+              </div>
+              <!-- </div> -->
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-6">
+    <div widget class="card">
+      <div class="card-header">
+        <span>{{"Change password" | translate}}</span>
+        <div class="widget-controls">
+          <a data-widgster="expand" class="transition"><i class="fa fa-chevron-down"></i></a>
+          <a data-widgster="collapse" class="transition"><i class="fa fa-chevron-up"></i></a>
+          <a data-widgster="fullscreen" class="transition"><i class="fa fa-expand"></i></a>
+          <a data-widgster="restore" class="transition"><i class="fa fa-compress"></i></a>
+          <!-- <a data-widgster="close" class="transition"><i class="fa fa-times"></i></a> -->
+        </div>
+      </div>
+      <div class="card-body widget-body row">
+
+        <div class="col-12">
+          <div class="card-body">
+            <form [formGroup]="changePasswordForm" (ngSubmit)="onChangePassword()" class="text-left">
+              <div class="form-group">
+                <label for="oldPassword">{{'Old Password' | translate}}</label>
+                <input id="oldPassword" class="form-control checking-field"
+                  [placeholder]="'formText.passwordRequired' | translate" type="password" formControlName="oldPassword">
+                <ng-container
+                  *ngIf="passwordFormControls.oldPassword.errors && passwordFormControls.oldPassword.touched">
+                  <span class="help-block text-danger" *ngIf="passwordFormControls.oldPassword.errors.required">
+                    {{ 'formText.passwordRequired' | translate }}
+                  </span>
+                </ng-container>
+              </div>
+
+              <div class="form-group">
+                <label for="password">{{'Password' | translate}}</label>
+                <input id="password" class="form-control checking-field"
+                  [placeholder]="'formText.passwordRequired' | translate" type="password" formControlName="password">
+                <ng-container *ngIf="passwordFormControls.password.errors && passwordFormControls.password.touched">
+                  <span class="help-block text-danger" *ngIf="passwordFormControls.password.errors.required">
+                    {{ 'formText.passwordRequired' | translate }}
+                  </span>
+                  <span class="help-block text-danger"
+                    *ngIf="passwordFormControls.password.errors.strongPassword && passwordFormControls.password.value !== ''">
+                    {{ 'formText.passwordStrong' | translate }}
+                  </span>
+                </ng-container>
+              </div>
+
+              <div class="form-group">
+                <label for="confirmPassword">{{'Confirm Password' | translate}}</label>
+                <input id="confirmPassword" class="form-control checking-field" type="password"
+                  [placeholder]="'formText.confirmPasswordPlaceHolder' | translate" formControlName="confirmPassword"
+                  [ngClass]="{'is-invalid':passwordFormControls.confirmPassword.errors && passwordFormControls.confirmPassword.touched || (passwordFormControls.confirmPassword.errors && passwordFormControls.confirmPassword.value)}">
+                <ng-container
+                  *ngIf="passwordFormControls.confirmPassword.errors && passwordFormControls.confirmPassword.touched || passwordFormControls.confirmPassword.errors && passwordFormControls.confirmPassword.value">
+                  <span class="help-block text-danger" *ngIf="passwordFormControls.confirmPassword.errors.required">
+                    {{ 'formText.confirmPasswordRequired' | translate }}
+                  </span>
+                  <span class="help-block text-danger" *ngIf="passwordFormControls.confirmPassword.errors.isMatch">
+                    {{ 'formText.confirmPasswordNotMatch' | translate }}
+                  </span>
+                </ng-container>
+              </div>
+
+              <div class="form-group float-right">
+                <button type="button" class="btn btn-primary" [disabled]="!changePasswordForm.valid"
+                  (click)="onChangePassword()">
+                  <span *ngIf="!isPasswordChange">{{ 'Change password' | translate}}</span>
+                  <i *ngIf="isPasswordChange" class="fa fa-circle-o-notch fa-spin fa-fw fa-lg"></i>
+                </button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

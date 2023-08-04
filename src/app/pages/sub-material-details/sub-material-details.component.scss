@@ -1,0 +1,17 @@
+.price-list-value {
+  cursor: pointer;
+}
+
+.fdv-document-name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.fdv-document-detail {
+  width: calc(100% - 70px);
+}
+
+.fdv-delete-btn {
+  width: 72px;
+}

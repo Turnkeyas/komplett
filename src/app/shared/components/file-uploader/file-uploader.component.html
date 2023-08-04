@@ -1,0 +1,14 @@
+<div class="form-group">
+    <div class="input-group file-upload">
+        <input type="file" (change)="fileChange(input)" #input class="file-upload-btn" />
+        <input type="text" class="form-control" [placeholder]="'Choose a file' | translate" value="{{fileName}}">
+        <i class="fa fa-times delete-file" (click)="removeFile()" *ngIf="fileName"></i>
+        <span>
+            <button class="btn btn-primary" type="button" (click)="onUploadFile()"
+                [tooltip]="'Upload FDV Document' | translate" placement="bottom">
+                <i *ngIf="!isDocumentUploading" class="fa fa-upload"></i>
+                <i *ngIf="isDocumentUploading" class="fa fa-circle-o-notch fa-spin fa-fw fa-lg"></i>
+            </button>
+        </span>
+    </div>
+</div>

@@ -1,0 +1,27 @@
+<div class="main d-flex align-item-center">
+  <div class="total col-6">
+    <span style="padding-left:10px ;">
+      {{  getMin(limitPerPage*(currentPage-1) +limitPerPage , total) -limitPerPage *(currentPage-1) }} / {{ total }}
+    </span>
+  </div>
+  <div class="bread d-flex align-items-center justify-content-end col-6">
+    <nav>
+      <ul class="pagination p-0 m-0">
+        <li class="page-item" [class.disabled]="currentPage === 1">
+          <a class="btn page-link item" (click)="getCurrentRow(currentPage -1)" tabindex="-1">
+            <i class="fa fa-angle-left" aria-hidden="true"></i></a>
+        </li>
+
+        <li class="page-item" *ngFor="let item of visiblePagesArray">
+          <a class="btn page-link item" [ngClass]="{activated: currentPage === item}"
+            (click)="getCurrentRow(item)">{{ item }}</a>
+        </li>
+
+        <li class="page-item" [class.disabled]="currentPage >= numberOfPaginators">
+          <a class="btn page-link item" (click)="getCurrentRow(currentPage+1)">
+            <i class="fa fa-angle-right" aria-hidden="true"></i></a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>

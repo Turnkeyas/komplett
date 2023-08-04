@@ -1,0 +1,226 @@
+<div class="row mb-2 align-items-center">
+    <div class="col-sm-6">
+        <div class="btn-group" dropdown>
+            <label for="button-basic" class="pr-2 mb-0 d-flex align-items-center"> {{ 'Select Group' | translate }} :
+            </label>
+            <button id="button-basic" dropdownToggle type="button" class="btn btn-main btn-sm dropdown-toggle"
+                aria-controls="dropdown-basic">
+                <span class="text-capitalize">{{ categoryDropdownName | translate }}</span>
+                <i class="fa fa-caret-down ml-1" aria-hidden="true"></i>
+            </button>
+            <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
+                <li role="menuitem" class="cursor-pointer">
+                    <a class="dropdown-item" (click)="onCategoryChange('all')"> {{ 'All' }} </a>
+                </li>
+                <li role="menuitem" class="cursor-pointer" *ngFor="let category of categoriesList">
+                    <a class="dropdown-item" (click)="onCategoryChange(category?.value)">
+                        {{ category?.title | translate }}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="col-sm-6 mt-2">
+        <button class="btn btn-main btn-sm float-sm-right" (click)="openModal(addGroupTemplate, false)">
+            {{'Add Group' | translate}}
+        </button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <div widget class="card">
+            <div class="card-header">
+                <span>{{'DATA TABLE' | translate}}</span>
+                <div class="widget-controls">
+                    <a data-widgster="expand" href="#" class="transition"><i class="fa fa-chevron-down"></i></a>
+                    <a data-widgster="collapse" href="#" class="transition"><i class="fa fa-chevron-up"></i></a>
+                    <a data-widgster="fullscreen" href="#" class="transition"><i class="fa fa-expand"></i></a>
+                    <a data-widgster="restore" href="#" class="transition"><i class="fa fa-compress"></i></a>
+                </div>
+            </div>
+            <div class="card-body position-relative widget-body">
+                <app-loader *ngIf="isLoading" class="d-flex justify-content-center"></app-loader>
+                <div class="table-responsive" *ngIf='!isLoading'>
+                    <table class="table table-striped mb-2 text-center">
+                        <thead>
+                            <th></th>
+                            <th *ngFor='let col of groupsTableCols; let i=index' (click)='sort(col,i)'>
+                                {{col.title | translate}}
+                            </th>
+                            <th>
+                                {{'Controllers' | translate}}
+                            </th>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngFor="let group of materialGroupsData, let i =index">
+                                <tr>
+                                    <td
+                                        [ngStyle]="{'cursor': group.subgroups && group.subgroups.length ? 'pointer' : 'normal'}">
+                                        <i *ngIf='group.subgroups && group.subgroups.length && !group.isInnerTableShow'
+                                            (click)="toggleSubgroup(group)" class='fa fa-chevron-down'>
+                                        </i>
+                                        <i *ngIf='group.subgroups && group.subgroups.length && group.isInnerTableShow'
+                                            (click)="toggleSubgroup(group)" class='fa fa-chevron-up'>
+                                        </i>
+                                    </td>
+                                    <td *ngFor='let column of groupsTableCols'>
+                                        {{
+                                        group[column.value] | translate
+                                        }}
+                                    </td>
+                                    <td>
+                                        <i class="fa btn fa fa-plus" aria-hidden="true"
+                                            [tooltip]="'Add Subgroup' | translate"
+                                            (click)="openSubgroupModal(addSubgroupTemplate, group._id, false)"></i>
+                                        <i class="fa btn fa-pencil ml-1" aria-hidden="true"
+                                            [tooltip]="'Edit' | translate"
+                                            (click)="openModal(addGroupTemplate, true, group)"></i>
+                                        <i class="fa btn fa fa-trash" aria-hidden="true"
+                                            [tooltip]="'Delete' | translate"
+                                            (click)="openDeleteModal(group, 'Delete Group')"></i>
+                                    </td>
+                                </tr>
+                                <!-- NESTED TABLE -->
+                                <tr *ngIf='group?.subgroups?.length > 0 && group.isInnerTableShow'>
+                                    <td class="pr-0 pb-0" [colSpan]='materialGroupsData.length + 2'>
+                                        <div class="table-responsive">
+                                            <table class="table innerTable table-striped text-center">
+                                                <thead>
+                                                    <th *ngFor='let subCol of subGroupsTableCols'>
+                                                        {{subCol.title | translate}}
+                                                    </th>
+                                                    <th class="text-right">Action</th>
+                                                </thead>
+                                                <tbody>
+                                                    <tr style='cursor: default;' *ngFor="let sGroup of group.subgroups">
+                                                        <td *ngFor='let  subCol of subGroupsTableCols'>
+                                                            {{
+                                                            sGroup[subCol.value] | translate
+                                                            }}
+                                                        </td>
+                                                        <td class="text-right">
+                                                            <i class="btn fa fa-pencil-square-o" aria-hidden="true"
+                                                                [tooltip]="'Update Sub Group' | translate"
+                                                                (click)="openSubgroupModal(addSubgroupTemplate, group._id, true, sGroup)"></i>
+                                                            <i class="btn fa fa-trash" aria-hidden="true"
+                                                                [tooltip]="'Delete Sub Group' | translate"
+                                                                (click)="openDeleteModal(sGroup, 'Delete Sub Group', true)"></i>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<ng-template #addGroupTemplate>
+    <div>
+        <div class="modal-header">
+            <h4 class="modal-title text-primary">{{isEditGroup ? ('Edit Group' |translate): ('Add Group' |translate) }}
+            </h4>
+        </div>
+
+        <form [formGroup]="addGroupForm" (ngSubmit)="onSubmit()">
+
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="name">{{'Group Name' | translate}}</label>
+                    <input id="name" class="form-control checking-field" [placeholder]="'Enter Group Name' | translate"
+                        type="text" formControlName="name">
+                    <ng-container *ngIf="controls.name.errors && controls.name.touched">
+                        <span class="help-block text-danger" *ngIf="controls.name.errors.required">
+                            {{ 'Group Name is required field' | translate}}
+                        </span>
+                    </ng-container>
+                </div>
+
+                <div class="form-group">
+                    <label for="category">{{'Select Category' | translate}}</label>
+                    <select class="form-control" formControlName="category" id="category">
+                        <option *ngFor="let category of categoriesList" [value]="category.value">
+                            {{ category.title }}
+                        </option>
+                    </select>
+
+                    <ng-container *ngIf="controls.category.errors && controls.category.touched">
+                        <span class="help-block text-danger" *ngIf="controls.category.errors.required">
+                            {{ 'Category is required field' | translate}}
+                        </span>
+                    </ng-container>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <div class="row w-100 justify-content-end">
+                    <div class="col-sm-auto px-0 mr-sm-3 mb-2">
+                        <button type="submit" class="submit-btn btn btn-primary btn-block"
+                            [disabled]='addGroupForm.invalid'>
+                            <span *ngIf="!isLoading"> {{isEditGroup ? ('Edit' |translate) : ('Add' |translate) }}</span>
+                            <i *ngIf="isLoading" class="fa fa-circle-o-notch fa-spin fa-fw fa-lg"></i>
+                        </button>
+                    </div>
+                    <div class="col-sm-auto px-0">
+                        <button type="button" class="btn btn-main btn-block" (click)="closeModal()">
+                            {{'Cancel' | translate}}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</ng-template>
+
+<ng-template #addSubgroupTemplate>
+    <div>
+        <div class="modal-header">
+            <h4 class="modal-title text-primary">{{isEditSubgroup ? ('Edit Sub Group' |translate): ('Add Sub Group'
+                |translate) }}
+            </h4>
+        </div>
+
+        <form [formGroup]="addSubgroupForm" (ngSubmit)="onSubgroupSubmit()">
+
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="name">{{'Subgroup Name' | translate}}</label>
+                    <input id="name" class="form-control checking-field"
+                        [placeholder]="'Enter Subgroup Name' | translate" type="text" formControlName="name">
+                    <ng-container *ngIf="controls.name.errors && controls.name.touched">
+                        <span class="help-block text-danger" *ngIf="controls.name.errors.required">
+                            {{ 'Subgroup Name is required field' | translate}}
+                        </span>
+                    </ng-container>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <div class="row w-100 justify-content-end">
+                    <div class="col-sm-auto px-0 mr-sm-3 mb-2">
+                        <button type="submit" class="submit-btn btn btn-primary btn-block"
+                            [disabled]='addSubgroupForm.invalid'>
+                            <span *ngIf="!isLoading"> {{isEditSubgroup ? ('Edit' |translate) : ('Add' |translate)
+                                }}</span>
+                            <i *ngIf="isLoading" class="fa fa-circle-o-notch fa-spin fa-fw fa-lg"></i>
+                        </button>
+                    </div>
+                    <div class="col-sm-auto px-0">
+                        <button type="button" class="btn btn-main btn-block" (click)="closeSubgroupModal()">
+                            {{'Cancel' | translate}}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</ng-template>

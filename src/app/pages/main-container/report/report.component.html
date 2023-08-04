@@ -1,0 +1,60 @@
+<div class="d-flex justify-content-end">
+    <button type="button" class="btn btn-main btn-sm mb-2" (click)="exportToPDF()">{{'Export to PDF' |
+        translate}}</button>
+</div>
+<div class="row bottom-30">
+    <div class="col">
+        <div widget class="card">
+            <div class="card-header">
+                <span>{{ 'Offer Template' | translate }}</span>
+                <div class="widget-controls">
+                    <a data-widgster="expand" href="#" class="transition"><i class="fa fa-chevron-down"></i></a>
+                    <a data-widgster="collapse" href="#" class="transition"><i class="fa fa-chevron-up"></i></a>
+                    <a data-widgster="fullscreen" href="#" class="transition"><i class="fa fa-expand"></i></a>
+                    <a data-widgster="restore" href="#" class="transition"><i class="fa fa-compress"></i></a>
+                </div>
+            </div>
+            <div class="card-body position-relative widget-body">
+                <app-loader *ngIf="isLoading" class="d-flex justify-content-center"></app-loader>
+                <div class="table-responsive" *ngIf='!isLoading'>
+                    <!-- <table class="table innerTable table-striped text-center mb-5">
+                        <thead style="cursor: pointer;">
+                            <th *ngFor='let item of firstTableColumns'>
+                                {{ item.title | translate }}
+                            </th>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngIf="reportData && reportData.length">
+                                <tr *ngFor="let report of reportData">
+                                    <td *ngFor='let column of firstTableColumns'>
+                                        {{ '' }}
+                                    </td>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                    </table> -->
+                </div>
+
+                <div class="table-responsive" *ngIf='!isLoading'>
+                    <table class="table innerTable table-striped text-center">
+                        <thead>
+                            <th *ngFor='let item of tableColumns;let i=index'>
+                                {{ item.title | translate }}
+                            </th>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngIf="reportData && reportData.data.length">
+                                <tr *ngFor="let report of reportData.data">
+                                    <td *ngFor='let column of tableColumns'>
+                                        {{ isNumber(report[column.value]) ? (report[column.value] | number:'1.0-0')
+                                        :report[column.value] }}
+                                    </td>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

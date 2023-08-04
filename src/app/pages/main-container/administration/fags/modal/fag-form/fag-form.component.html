@@ -1,0 +1,68 @@
+<div>
+  <div class="modal-header">
+    <h4 class="modal-title text-primary">{{isEditMode ? ('Update Fag' | translate): ('Insert Fag' | translate)}}</h4>
+  </div>
+
+  <div class="modal-body">
+    <form [formGroup]='fagForm'>
+      <div class="form-group">
+        <label for="id">{{'Id' | translate}}</label>
+        <input id="id" class="form-control checking-field" (change)='checkIdIsUnique($event)'
+          [placeholder]="'Enter Id of Fag' | translate" type="number" formControlName="id">
+        <ng-container *ngIf="controls.id.errors && controls.id.touched">
+          <span class="help-block text-danger" *ngIf="controls.id.errors.required">
+            {{ 'Id is required field' | translate}}
+          </span>
+          <span class="help-block text-danger" *ngIf="controls.id.errors.notUnique">
+            {{ 'Id is already used' | translate}}
+          </span>
+        </ng-container>
+      </div>
+
+      <div class="form-group">
+        <label for="description">{{'Description' |translate}}</label>
+        <input id="description" class="form-control checking-field" [placeholder]="'Enter Description' | translate"
+          type="text" formControlName="description">
+        <ng-container *ngIf="controls.description.errors && controls.description.touched">
+          <span class="help-block text-danger" *ngIf="controls.description.errors.required">
+            {{ 'Description is required field' | translate}}
+          </span>
+        </ng-container>
+      </div>
+
+      <div class="form-group">
+        <label for="hourlyRate">{{'Hourly Rate' | translate}}</label>
+        <input id="hourlyRate" (input)="prevHourlyRate = +$event.target.value" class="form-control checking-field"
+          [placeholder]="'Enter Hourly Rate' | translate" type="number" formControlName="hourlyRate"
+          [readOnly]="controls.isDefault.value">
+        <ng-container *ngIf="controls.hourlyRate.errors && controls.hourlyRate.touched">
+          <span class="help-block text-danger" *ngIf="controls.hourlyRate.errors.required">
+            {{ 'Hourly Rate is required field' | translate}}
+          </span>
+        </ng-container>
+      </div>
+
+      <div class="form-group mb-0">
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input checkbox-main"
+            (change)="onIsDefaultChange($event.target.checked)" formControlName="isDefault" id="isDefault">
+          <label class="custom-control-label" for="isDefault">{{'Use standard hourly wage' | translate}}</label>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="modal-footer">
+    <div class="row w-100 justify-content-end">
+      <div class="col-sm-auto px-0 mr-sm-3 mb-2">
+        <button type="button" class="btn btn-primary btn-block" (click)='confirmClick()' [disabled]='fagForm.invalid'>
+          <span *ngIf="!isLoading"> {{isEditMode ? ('Update' | translate) : ('Insert' | translate)}} </span>
+          <i *ngIf="isLoading" class="fa fa-circle-o-notch fa-spin fa-fw fa-lg"></i>
+        </button>
+      </div>
+      <div class="col-sm-auto px-0">
+        <button type="button" class="btn btn-main btn-block" (click)="closeModal()">{{'Cancel' | translate }}</button>
+      </div>
+    </div>
+  </div>
+</div>

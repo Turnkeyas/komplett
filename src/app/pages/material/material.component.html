@@ -1,0 +1,70 @@
+<div class="modal-header">
+  <h4 class="modal-title text-primary" *ngIf='!isEditMode'>{{ 'Add New Section' | translate }}</h4>
+  <h4 class="modal-title text-primary" *ngIf='isEditMode'>{{'Add Material' | translate}}</h4>
+</div>
+
+<form [formGroup]="materialForm" (ngSubmit)="fnAddMaterial()" class="text-left">
+  <div class="modal-body">
+    <div class="row">
+      <div class="col">
+        <div *ngIf='!isEditMode' class="form-group">
+          <label for="sectionName">{{'Section Name' | translate}}</label>
+          <input id="sectionName" class="form-control checking-field" [placeholder]="'Enter Section Name' | translate"
+            type="text" formControlName="buildingComponents">
+          <ng-container *ngIf="controls.buildingComponents.errors && controls.buildingComponents.touched">
+            <span class="help-block text-danger" *ngIf="controls.buildingComponents.errors.required">
+              {{ 'Section Name is required field' | translate}}
+            </span>
+          </ng-container>
+        </div>
+
+        <div class="form-group">
+          <label for="subMaterialSel">{{'Select Materials' | translate}}</label>
+          <div id="subMaterialSel">
+            <i *ngIf="isLoading" class="fa fa-circle-o-notch fa-spin fa-fw fa-lg"></i>
+            <ng-select *ngIf="!isLoading" [disabled]="!subMaterialsList" appearance="outline" [clearSearchOnAdd]='true'
+              [closeOnSelect]="false" [multiple]="true" [searchable]="true" [clearable]="true" appendTo="body"
+              [virtualScroll]="true" formControlName="subMaterials">
+              <ng-option *ngFor="let option of list " [value]="option.id">
+                <span>{{ option.name }}</span>
+                <span class="text-primary" *ngIf="option.groupName"> ({{ option.groupName }}
+                  <span class="text-primary" *ngIf="option.subgroupName"> > {{ option.subgroupName }}</span>
+                  )</span>
+              </ng-option>
+            </ng-select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="quantity">{{'Quantity' | translate}}</label>
+          <input id="quantity" class="form-control checking-field" [placeholder]="'Enter Quantity' | translate"
+            type="number" formControlName="quantity" min="0">
+          <ng-container *ngIf="controls.quantity.errors && controls.quantity.touched">
+            <span class="help-block text-danger" *ngIf="controls.quantity.errors.required">
+              {{'Quantity is required field' | translate}}
+            </span>
+            <span class="help-block text-danger" *ngIf="controls.quantity.errors.min">
+              {{'Minimum Quantity should be 0' | translate}}
+            </span>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <div class="row w-100 justify-content-end">
+      <div class="col-sm-auto px-0 mr-sm-3 mb-2">
+        <button type="submit" class="btn btn-main btn-block" [disabled]="!materialForm.valid">
+          <span *ngIf="!isLoading">{{'Add' | translate}}</span>
+          <i *ngIf="isLoading" class="fa fa-circle-o-notch fa-spin fa-fw fa-lg"></i>
+        </button>
+      </div>
+      <div class="col-sm-auto px-0">
+        <button type="button" (click)="closeModal()" class="btn btn-danger btn-block">
+          {{'Cancel' | translate}}
+        </button>
+      </div>
+    </div>
+  </div>
+</form>

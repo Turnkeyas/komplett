@@ -1,0 +1,61 @@
+<nav class="nav az-navbar fixed-top">
+  <a class="navbar-brand" routerLink="/" (click)="closeSubMenus()">
+    <div class="navbar-main-logo">
+      <div class="h-100 bg-white">
+        <img class="d-md-block d-none h-100" src="assets/img/logo/main-logo.png" alt="">
+        <img class="d-md-none h-100" src="assets/img/logo/main-logo.png" alt="">
+      </div>
+    </div>
+  </a>
+  <div id="lines" class="transition" (click)="toggleMenu()"></div>
+
+  <div class="right-section d-flex align-items-center">
+    <div class="mr-3">
+
+      <li class="nav-item">
+        <div class="dropdown float-right user-menu">
+          <a class="dropdown-toggle user-link" data-toggle="dropdown" role="button" aria-expanded="false">
+            <ng-container *ngFor="let language of languages">
+              <ng-container *ngIf="language.isSelected">
+                <img class="language-flag mr-2 rounded" [src]="language.flag">
+                <i class="fa fa-caret-down text-white" aria-hidden="true"></i>
+              </ng-container>
+            </ng-container>
+          </a>
+
+          <ul class="dropdown-menu">
+            <a class="language-selection dropdown-item pr-3 pl-3" [ngClass]="{'active-language': language.isSelected}"
+              *ngFor="let language of languages" (click)="setLanguage(language)">
+              <img class="language-flag mr-2 rounded" [src]="language.flag">
+              <span> {{ language.name }} </span>
+            </a>
+          </ul>
+        </div>
+      </li>
+    </div>
+
+    <ul class="nav ">
+      <li class="nav-item">
+      </li>
+      <li class="nav-item">
+        <div class="dropdown float-right user-menu">
+          <a class="dropdown-toggle user-link" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
+            <img src="assets/img/users/avatar1.svg" alt="user-img" class="img-circle user-img">
+            <span class="d-lg-inline d-none"> {{ loggedInUser?.email }} </span>
+          </a>
+          <ul class="dropdown-menu">
+            <li class="user-info">
+              <img src="assets/img/users/avatar1.svg" alt="user-img" class="img-circle user-img">
+              <p>
+                {{ loggedInUser?.email }}
+              </p>
+            </li>
+            <a routerLink="/profile" class="dropdown-item"><i class="fa fa-user"></i>Profile</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" (click)="fnLogout()"><i class="fa fa-power-off"></i>{{'Log Out' | translate}}</a>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </div>
+</nav>

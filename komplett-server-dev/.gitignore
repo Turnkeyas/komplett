@@ -1,0 +1,6 @@
+node_modules
+demo.js
+src/components/materials/mockdata.ts
+logs
+package-lock.json
+uploads

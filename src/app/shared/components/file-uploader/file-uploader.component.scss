@@ -1,0 +1,30 @@
+.file-upload {
+    input {
+        height: 38px;
+    }
+    .file-upload-btn {
+        position: absolute;
+        width: calc(100% - 50px);
+        height: 35px;
+        z-index: 9;
+        opacity: 0;
+    }
+    .delete-file {
+        position: absolute;
+        right: 60px;
+        top: 8px;
+        font-size: 16px;
+        opacity: 0.8;
+        cursor: pointer;
+        z-index: 99;
+        visibility: hidden;
+    }
+
+    .btn {
+        width: 50px;
+    }
+
+    &:hover .delete-file {
+        visibility: visible;
+    }
+}

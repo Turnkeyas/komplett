@@ -1,0 +1,64 @@
+<div class="login-container">
+    <div class="col-xl-4 col-md-6 col-10 mx-auto">
+        <div class="card">
+            <div class="card-body text-center">
+                <h2 class="card-title"> {{ 'formText.logInTitle' | translate }} </h2>
+                <a routerLink="/" class="btn btn-link transition bottom-15">
+                    {{ 'formText.signUpLink' | translate }}
+                </a>
+                <!-- signup -->
+                <form [formGroup]="loginForm" (ngSubmit)="fnSignIn()" ngxsForm="form.login" class="text-left">
+                    <div class="form-group">
+                        <input id="email" class="form-control checking-field"
+                            [placeholder]="'formText.emailPlaceHolder' | translate" type="email"
+                            formControlName="email">
+                        <ng-container *ngIf="controls.email.errors && controls.email.touched">
+                            <span class="help-block text-danger" *ngIf="controls.email.errors.required">
+                                {{ 'formText.emailRequired' | translate }}
+                            </span>
+                            <span class="help-block text-danger"
+                                *ngIf="!controls.email.errors.required && controls.email.errors.emailId">
+                                {{ 'formText.emailInvalid' | translate }}
+                            </span>
+                        </ng-container>
+                    </div>
+
+                    <div class="form-group">
+                        <input id="pwd" class="form-control checking-field"
+                            [placeholder]="'formText.passwordRequired' | translate" type="password"
+                            formControlName="password">
+                        <ng-container *ngIf="controls.password.errors && controls.password.touched">
+                            <span class="help-block text-danger" *ngIf="controls.password.errors.required">
+                                {{ 'formText.passwordRequired' | translate }}
+                            </span>
+                            <span class="help-block text-danger" *ngIf="controls.password.errors.minlength">
+                                {{ 'formText.passwordMinLength' | translate }}
+                            </span>
+                            <span class="help-block text-danger"
+                                *ngIf="controls.password.errors.strongPassword && controls.password.value !== ''">
+                                {{ 'formText.passwordStrong' | translate }}
+                            </span>
+                        </ng-container>
+                    </div>
+
+                    <div class="form-group d-flex justify-content-between">
+                        <a class="btn btn-link forgot transition pull-right" href="javascript:void(0);">
+                            {{ 'formText.forgotPassword' | translate }}
+                        </a>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-main btn-block" [disabled]="!loginForm.valid"
+                            *ngIf="!isLoading">
+                            {{ 'formText.logInBtnText' | translate }}
+                        </button>
+                        <div class="d-flex align-items-center justify-content-center">
+                            <app-loader *ngIf="isLoading"></app-loader>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>

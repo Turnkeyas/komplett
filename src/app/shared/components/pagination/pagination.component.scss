@@ -1,0 +1,33 @@
+.main {
+  height: 60px;
+  overflow: hidden;
+  background-color: #646464;
+}
+.pagination {
+  float: right;
+}
+.total {
+  text-align: start;
+  color: white;
+  display: flex;
+  align-items: center;
+}
+
+li {
+  border: none;
+  a {
+    color: white;
+  }
+
+  .active{
+    background-color: red;
+  }
+}
+.item {
+  background-color: #666666 !important;
+  border: none !important;
+}
+
+.activated{
+  background-color: #949495 !important;
+}

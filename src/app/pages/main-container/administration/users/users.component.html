@@ -1,0 +1,94 @@
+<div class="row mb-2 align-items-center ">
+  <div class="col-sm-6">
+    <li class="nav-item">
+      <div class="dropdown">
+        <div class="d-flex align-items-center">
+          <label for="categoryList" class="mb-0 mr-2">{{"Select Role" | translate}}</label>
+          <a id="categoryList" class="category-selection dropdown-toggle form-control" data-toggle="dropdown"
+            role="button" aria-expanded="false">
+            <ng-container *ngFor="let list of rolesDropDownKeys">
+              <ng-container *ngIf="list.isSelected">
+                <span class="text-primary selected-value mr-1"> {{ list.name }} </span>
+                <i class="fa fa-chevron-down text-primary" aria-hidden="true"></i>
+              </ng-container>
+            </ng-container>
+          </a>
+
+          <ul class="dropdown-menu">
+            <a class="btn dropdown-item pr-3 pl-3" *ngFor="let list of rolesDropDownKeys"
+              [ngClass]="{'active': list.isSelected}" (click)="onSelectionChange(list)">
+              <span> {{ list.name }} </span>
+            </a>
+          </ul>
+        </div>
+      </div>
+    </li>
+  </div>
+
+  <div class="col-sm-6 mt-2">
+    <button class="btn btn-main btn-sm float-sm-right" (click)='openFormModal()'>{{'Add User' | translate}}</button>
+  </div>
+</div>
+
+
+
+
+<div class="row bottom-30">
+  <div class="col">
+    <div widget class="card">
+      <div class="card-header">
+        <span>{{"DATA TABLE" | translate}}</span>
+        <div class="widget-controls">
+          <a data-widgster="expand" href="#" class="transition"><i class="fa fa-chevron-down"></i></a>
+          <a data-widgster="collapse" href="#" class="transition"><i class="fa fa-chevron-up"></i></a>
+          <a data-widgster="fullscreen" href="#" class="transition"><i class="fa fa-expand"></i></a>
+          <a data-widgster="restore" href="#" class="transition"><i class="fa fa-compress"></i></a>
+          <!-- <a data-widgster="close" href="#" class="transition"><i class="fa fa-times"></i></a> -->
+        </div>
+      </div>
+      <div class="card-body position-relative widget-body">
+        <app-loader *ngIf="isLoading" class="d-flex justify-content-center"></app-loader>
+        <div class="table-responsive" *ngIf='!isLoading'>
+          <table class="table innerTable table-striped text-center">
+            <thead style="cursor: pointer;">
+              <th *ngFor='let item of tableColumns;let i=index' (click)='sort(item,i)'>
+                <i class="fa fa-arrow-up" style="color: white;"></i>
+                {{item.name | translate}}
+                <i class="fa fa-angle-down font-weight-bold" *ngIf='sortedColumnsIndex === i && sortAscending'
+                  aria-hidden="true"></i>
+                <i class="fa fa-angle-up font-weight-bold" *ngIf='sortedColumnsIndex === i && !sortAscending'
+                  aria-hidden="true"></i>
+                <i class="fa fa-arrow-up" style="color: white;" *ngIf='sortedColumnsIndex!==i'></i>
+              </th>
+              <th>
+                {{"Controllers" | translate}}
+              </th>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of userList">
+                <td *ngFor='let column of tableColumns'>
+                  {{
+                  user[column.key]
+                  }}
+                </td>
+                <td>
+                  <i class="fa btn fa-pencil ml-1" (click)='openFormModal(user)' aria-hidden="true"
+                    [tooltip]="'Edit' | translate"></i>
+                  <i class="fa btn fa fa-trash" (click)='openDeleteModal(user)' aria-hidden="true"
+                    [tooltip]="'Delete' | translate"></i>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- <div class='pagination d-flex justify-content-end align-items-center'>
+          <ng-container *ngIf="page && metaData?.total">
+            <pagination class="abc mb-0" [maxSize]="5" [boundaryLinks]="true" [(ngModel)]='page' previousText="&lsaquo;"
+              nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;" [totalItems]='metaData?.total'
+              [itemsPerPage]='limit' (pageChanged)='pageChange($event)'></pagination>
+          </ng-container>
+        </div> -->
+      </div>
+    </div>
+  </div>
+</div>

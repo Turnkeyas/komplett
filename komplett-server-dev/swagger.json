@@ -1,0 +1,2115 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Node-Typescript API",
+    "version": "1.0.0",
+    "description": "A sample API"
+  },
+  "servers": [
+    {
+      "url": "http://192.168.0.119:3000"
+    },
+    {
+      "url": "https://mongo-kompletee.herokuapp.com"
+    },
+    {
+      "url": "http://localhost:3000"
+    },
+    {
+      "url": "http://ec2-18-216-130-99.us-east-2.compute.amazonaws.com:3000"
+    },
+    {
+      "url": "http://ec2-3-22-60-204.us-east-2.compute.amazonaws.com:3000"
+    }
+  ],
+  "paths": {
+    "/auth/signup/": {
+      "post": {
+        "description": "sign up user to application",
+        "tags": [
+          "auth"
+        ],
+        "requestBody": {
+          "description": "sign up body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserSchema"
+              },
+              "example": {
+                "email": "test.user@mail.com",
+                "password": "test_test"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "user successfuly signed in",
+            "content": {
+              "appication/json": {
+                "example": {
+                  "status": 200,
+                  "logged": true,
+                  "message": "Sign in successfull!!"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "sign in failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": 400,
+                  "logged": false,
+                  "message": "Email already exists"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login/": {
+      "post": {
+        "description": "Login user to application",
+        "tags": [
+          "auth"
+        ],
+        "requestBody": {
+          "description": "login body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserSchema"
+              },
+              "example": {
+                "email": "test.user@mail.com",
+                "password": "test_test"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "user successfuly logged",
+            "content": {
+              "appication/json": {
+                "example": {
+                  "status": 200,
+                  "logged": true,
+                  "message": "Successfully logged!"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not logged, invalid credentials",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": 401,
+                  "logged": false,
+                  "message": "Invalid credentials"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/customer": {
+      "post": {
+        "description": "create customer",
+        "tags": [
+          "customer"
+        ],
+        "requestBody": {
+          "description": "customer creation request body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerSchema"
+              },
+              "example": {
+                "user": {
+                  "name": "someone",
+                  "email": "someemail@some.com"
+                },
+                "contactPerson": "Mohcine",
+                "location": {
+                  "city": "oslo",
+                  "postCode": 548
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "return created customer",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/CustomerSchema"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "description": "Get Customers api with pagination and sorting",
+        "tags": [
+          "customer"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": 1
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            },
+            "description": 10
+          },
+          {
+            "in": "query",
+            "name": "sort",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Example = createdAt"
+          },
+          {
+            "in": "query",
+            "name": "customerName",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Example = somename"
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "schema": {
+              "type": "acs"
+            },
+            "description": "Example = acs"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns customers list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/CustomerSchema"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "description": "update customer",
+        "tags": [
+          "customer"
+        ],
+        "requestBody": {
+          "description": "_id field is required",
+          "required": true,
+          "content": {
+            "application/json": {
+              "required": [
+                "id"
+              ],
+              "schema": {
+                "$ref": "#/components/schemas/CustomerSchema"
+              },
+              "example": {
+                "_id": "5f9bbb17405a9420e895920f",
+                "user": {
+                  "_id": "5f9bbb17405a9420e895920d",
+                  "name": "Mohcine",
+                  "email": "someemail@some.com"
+                },
+                "contactPerson": "Mohcine",
+                "location": {
+                  "_id": "5f9bbb17405a9420e895920e",
+                  "city": "oslo",
+                  "postCode": 548
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "return created customer",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/CustomerSchema"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/customer/{id}": {
+      "get": {
+        "description": "get submaterials for the given materialId",
+        "tags": [
+          "customer"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": {
+                    "$ref": "#/components/schemas/CustomerSchema"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "delete customer by id",
+        "tags": [
+          "customer"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "content": null
+          }
+        }
+      }
+    },
+    "/api/employee": {
+      "get": {
+        "description": "Get Employees api with pagination and sorting",
+        "tags": [
+          "employee"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": 1
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            },
+            "description": 10
+          },
+          {
+            "in": "query",
+            "name": "sort",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Example = createdAt"
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "schema": {
+              "type": "acs"
+            },
+            "description": "Example = acs"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns customers list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EmployeeSchema"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "create employee",
+        "tags": [
+          "employee"
+        ],
+        "requestBody": {
+          "description": "employee creation request body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmployeeSchema"
+              },
+              "example": {
+                "user": {
+                  "name": "someone",
+                  "email": "someemail@some.com"
+                },
+                "hseCardNumber": 5,
+                "employeeNumber": 1,
+                "location": {
+                  "city": "oslo",
+                  "postCode": 548
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "return created employee",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EmployeeSchema"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "description": "update employee",
+        "tags": [
+          "employee"
+        ],
+        "requestBody": {
+          "description": "_id field is required",
+          "required": true,
+          "content": {
+            "application/json": {
+              "required": [
+                "id"
+              ],
+              "schema": {
+                "$ref": "#/components/schemas/EmployeeSchema"
+              },
+              "example": {
+                "_id": "5f9bbb17405a9420e895920f",
+                "user": {
+                  "_id": "5f9bbb17405a9420e895920d",
+                  "name": "Mohcine",
+                  "email": "someemail@some.com"
+                },
+                "hseCardNumber": 15,
+                "location": {
+                  "_id": "5f9bbb17405a9420e895920e",
+                  "city": "oslo",
+                  "postCode": 548
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "return created employee",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EmployeeSchema"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/employee/{id}": {
+      "get": {
+        "description": "get submaterials for the given materialId",
+        "tags": [
+          "employee"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": {
+                    "$ref": "#/components/schemas/EmployeeSchema"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "delete employee by id",
+        "tags": [
+          "employee"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "content": null
+          }
+        }
+      }
+    },
+    "/api/master-materials": {
+      "get": {
+        "description": "Get master material api with pagination and sorting",
+        "tags": [
+          "MasterMaterial"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "category",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Carpentry"
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": 1
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            },
+            "description": 10
+          },
+          {
+            "in": "query",
+            "name": "sort",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Example = createdAt"
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "schema": {
+              "type": "acs"
+            },
+            "description": "Example = acs"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns customers list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/SubMaterialSchema"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "add master sub materials",
+        "tags": [
+          "MasterMaterial"
+        ],
+        "requestBody": {
+          "description": "application and category field is required",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubMaterialSchema"
+              },
+              "example": {
+                "application": "application name here",
+                "category": "Engineering"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/InsertSubMaterial"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "description": "update master-materials",
+        "tags": [
+          "MasterMaterial"
+        ],
+        "requestBody": {
+          "description": "_id field is required",
+          "required": true,
+          "content": {
+            "application/json": {
+              "required": [
+                "id"
+              ],
+              "schema": {
+                "$ref": "#/components/schemas/SubMaterialSchema"
+              },
+              "example": {
+                "_id": "5f9bbb17405a9420e895920f",
+                "application": "application name here",
+                "category": "Engineering"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "return updated master-material",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/SubMaterialSchema"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/master-materials/{id}": {
+      "delete": {
+        "description": "delete master-materials by id",
+        "tags": [
+          "MasterMaterial"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "content": null
+          }
+        }
+      }
+    },
+    "/api/material": {
+      "get": {
+        "description": "Get Materials",
+        "tags": [
+          "material"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": 1
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            },
+            "description": 10
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Example = Engineering"
+          },
+          {
+            "in": "query",
+            "name": "sort",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Example = _id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "return materials based on conditions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/MaterialSchema"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "add material",
+        "tags": [
+          "material"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MaterialSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "material created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/MaterialSchema"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "material"
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "_id field is required",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MaterialSchema"
+              },
+              "example": {
+                "_id": "5f85845341855c2b209ba312",
+                "type": "Engineering",
+                "subMaterials": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/MaterialSchema"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/material/withsubmaterials": {
+      "post": {
+        "description": "add material",
+        "tags": [
+          "material"
+        ],
+        "requestBody": {
+          "required": [
+            "name"
+          ],
+          "description": "buildingComponents and type is required",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MaterialSchema"
+              },
+              "example": {
+                "subMaterials": [
+                  "5fa8cbacb992bf182cfec886"
+                ],
+                "buildingComponents": "name here",
+                "type": "Engineering"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "material created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/MaterialSchema"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/material/{id}": {
+      "delete": {
+        "description": "delete material by id",
+        "tags": [
+          "material"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "content": null
+          }
+        }
+      }
+    },
+    "/api/material/subMaterial": {
+      "post": {
+        "description": "add submaterials",
+        "tags": [
+          "submaterial"
+        ],
+        "requestBody": {
+          "description": "materialId field is required",
+          "required": true,
+          "content": {
+            "application/json": {
+              "materialId": {
+                "type": "string"
+              },
+              "schema": {
+                "$ref": "#/components/schemas/InsertSubMaterial",
+                "materialId": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "response": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/InsertSubMaterial"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "description": "update subMaterial",
+        "tags": [
+          "submaterial"
+        ],
+        "requestBody": {
+          "description": "_id field is required",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubMaterialSchema"
+              },
+              "example": {
+                "_id": "5f83da51fb2d502d6ca74b2c",
+                "NS3420": "std"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/material/subMaterial/{materialId}": {
+      "get": {
+        "description": "get submaterials for the given materialId",
+        "tags": [
+          "submaterial"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "materialId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": {
+                    "$ref": "#/components/schemas/SubMaterialSchema"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/project": {
+      "get": {
+        "description": "Get Projects api with pagination and sorting",
+        "tags": [
+          "project"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Example = active"
+          },
+          {
+            "in": "query",
+            "name": "projectName",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Example = project 1"
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": 1
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            },
+            "description": 10
+          },
+          {
+            "in": "query",
+            "name": "sort",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Example = createdAt"
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "schema": {
+              "type": "acs"
+            },
+            "description": "Example = acs"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns projects list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ProjectSchema"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "create project",
+        "tags": [
+          "project"
+        ],
+        "requestBody": {
+          "description": "project creation request body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectSchema"
+              },
+              "example": {
+                "name": "userName",
+                "description": "desc",
+                "customerId": "5f9cdeaf63bcde326cc86b1e",
+                "location": {
+                  "city": "oslo",
+                  "postCode": 548
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "return created project",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ProjectSchema"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "description": "update project",
+        "tags": [
+          "project"
+        ],
+        "requestBody": {
+          "description": "_id field is required",
+          "required": true,
+          "content": {
+            "application/json": {
+              "required": [
+                "id"
+              ],
+              "schema": {
+                "$ref": "#/components/schemas/ProjectSchema"
+              },
+              "example": {
+                "_id": "5f9bbb17405a9420e895920f",
+                "contactPersonName": "Mohcine",
+                "location": {
+                  "_id": "5f9d5344157c674bf0798c93",
+                  "city": "somelo",
+                  "postCode": 548
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "return created project",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ProjectSchema"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/project/{id}": {
+      "get": {
+        "description": "get submaterials for the given materialId",
+        "tags": [
+          "project"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": {
+                    "$ref": "#/components/schemas/ProjectSchema"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "get submaterials for the given materialId",
+        "tags": [
+          "project"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "content": null
+          }
+        }
+      }
+    },
+    "/api/project/customer/{id}": {
+      "get": {
+        "description": "get project by customer id",
+        "tags": [
+          "project"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": {
+                    "$ref": "#/components/schemas/ProjectSchema"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/task": {
+      "get": {
+        "description": "Get tasks api with pagination and sorting",
+        "tags": [
+          "task"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Example = active"
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": 1
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            },
+            "description": 10
+          },
+          {
+            "in": "query",
+            "name": "sort",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Example = createdAt"
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "schema": {
+              "type": "acs"
+            },
+            "description": "Example = acs"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns customers list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/TaskSchema"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "create task",
+        "tags": [
+          "task"
+        ],
+        "requestBody": {
+          "description": "task creation request body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskSchema"
+              },
+              "example": {
+                "name": "taskname",
+                "description": "desc",
+                "estimation": 15,
+                "projectId": "5f9f8aabd9bb99369c51923d"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "return created customer",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/TaskSchema"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "description": "update task",
+        "tags": [
+          "task"
+        ],
+        "requestBody": {
+          "description": "_id field is required",
+          "required": true,
+          "content": {
+            "application/json": {
+              "required": [
+                "id"
+              ],
+              "schema": {
+                "$ref": "#/components/schemas/TaskSchema"
+              },
+              "example": {
+                "_id": "5f9fcc4c36aa9d1bd415392b",
+                "name": "updated taskname",
+                "description": "updated desc",
+                "estimation": 150
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "return created task",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/TaskSchema"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/task/{id}": {
+      "get": {
+        "description": "get submaterials for the given materialId",
+        "tags": [
+          "task"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": {
+                    "$ref": "#/components/schemas/TaskSchema"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "get submaterials for the given materialId",
+        "tags": [
+          "task"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "content": null
+          }
+        }
+      }
+    },
+    "/v1/users": {
+      "get": {
+        "description": "Get all stored users in Database",
+        "tags": [
+          "users"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An array of users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Users"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Create new User",
+        "tags": [
+          "users"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "user creation request body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserSchema"
+              },
+              "example": {
+                "name": "userName",
+                "email": "test.user@mail.com"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "return created user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/UserSchema"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "description": "Update User",
+        "tags": [
+          "users"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "user updation request body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserSchema"
+              },
+              "example": {
+                "_id": "5f6ee8ee65c1511c8499fb3c",
+                "name": "userName",
+                "email": "test.user@mail.com"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": null
+          }
+        }
+      }
+    },
+    "/v1/users/{id}": {
+      "get": {
+        "description": "Get user by userId",
+        "tags": [
+          "users"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "the unique userId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "return user by id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/UserSchema"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete user by userId",
+        "tags": [
+          "users"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "the unique userId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "return deleted user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/UserSchema"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CustomerSchema": {
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "contactPerson": {
+            "type": "string"
+          },
+          "customerType": {
+            "type": "string"
+          },
+          "contactPersonNumber": {
+            "type": "string"
+          },
+          "organizationNumber": {
+            "type": "string"
+          },
+          "contactPersonEmail": {
+            "type": "string"
+          },
+          "locationId": {
+            "type": "string"
+          },
+          "location": {
+            "type": "object",
+            "$ref": "#/components/schemas/LocationSchema"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserSchema"
+          }
+        }
+      },
+      "EmployeeSchema": {
+        "properties": {
+          "employeeNumber": {
+            "type": "number"
+          },
+          "hseCardNumber": {
+            "type": "number"
+          },
+          "otherContactDetails": {
+            "type": "string"
+          },
+          "emergencyContactName": {
+            "type": "string"
+          },
+          "emergencyContactPhoneNumber": {
+            "type": "string"
+          },
+          "emergencyContactEmail": {
+            "type": "string"
+          },
+          "locationId": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "location": {
+            "type": "object",
+            "$ref": "#/components/schemas/LocationSchema"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserSchema"
+          }
+        }
+      },
+      "LocationSchema": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "street": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "stateCode": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "countryCode": {
+            "type": "string"
+          },
+          "postCode": {
+            "type": "string"
+          },
+          "formattedAddress": {
+            "type": "string"
+          },
+          "latitude": {
+            "type": "number"
+          },
+          "longitude": {
+            "type": "number"
+          }
+        }
+      },
+      "MaterialSchema": {
+        "properties": {
+          "crowd": {
+            "type": "number"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "buildingComponents": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "level": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "subMaterials": {
+            "type": "array",
+            "example": [],
+            "items": {
+              "$ref": "#/components/schemas/SubMaterialSchema"
+            }
+          }
+        }
+      },
+      "SubMaterialSchema": {
+        "properties": {
+          "subject": {
+            "type": "string"
+          },
+          "NS3420": {
+            "type": "string"
+          },
+          "application": {
+            "type": "string"
+          },
+          "crowd": {
+            "type": "string"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "itemPrice": {
+            "type": "number"
+          },
+          "itemFactor": {
+            "type": "number"
+          },
+          "inverseFactor": {
+            "type": "number"
+          },
+          "useListPrice": {
+            "type": "number"
+          },
+          "documents": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "quantity": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string"
+              },
+              "quantityPerComponent": {
+                "type": "number"
+              },
+              "svinn": {
+                "type": "number"
+              },
+              "inTotal": {
+                "type": "number"
+              }
+            }
+          },
+          "time": {
+            "type": "object",
+            "properties": {
+              "minPerComponent": {
+                "type": "number"
+              },
+              "hoursPerComponent": {
+                "type": "number"
+              },
+              "totalTimeConsumption": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "InsertSubMaterial": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SubMaterialSchema"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "materialId": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
+      "ProjectSchema": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "contactPersonName": {
+            "type": "string"
+          },
+          "contactPersonEmail": {
+            "type": "string"
+          },
+          "contactPersonPhoneNumber": {
+            "type": "string"
+          },
+          "projectNumber": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string"
+          },
+          "estimatedHours": {
+            "type": "number"
+          },
+          "registeredHours": {
+            "type": "number"
+          },
+          "startDate": {
+            "type": "date"
+          },
+          "completionDate": {
+            "type": "date"
+          },
+          "deadLine": {
+            "type": "date"
+          },
+          "locationId": {
+            "type": "string"
+          },
+          "customerId": {
+            "type": "string"
+          },
+          "location": {
+            "type": "object",
+            "$ref": "#/components/schemas/LocationSchema"
+          },
+          "customer": {
+            "$ref": "#/components/schemas/CustomerSchema"
+          }
+        }
+      },
+      "TaskSchema": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "estimation": {
+            "type": "number"
+          },
+          "reportedHours": {
+            "type": "number"
+          },
+          "progress": {
+            "type": "number"
+          },
+          "startDate": {
+            "type": "date"
+          },
+          "deadLine": {
+            "type": "date"
+          },
+          "completionDate": {
+            "type": "date"
+          },
+          "description": {
+            "type": "string"
+          },
+          "assignedEmployees": {
+            "type": "array",
+            "example": [],
+            "items": {
+              "$ref": "#/components/schemas/EmployeeSchema"
+            }
+          },
+          "availableForAllEmployees": {
+            "type": "boolean"
+          },
+          "projectId": {
+            "$ref": "#/components/schemas/ProjectSchema"
+          }
+        }
+      },
+      "UserSchema": {
+        "required": [
+          "email",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "passwordResetToken": {
+            "type": "string"
+          },
+          "passwordResetExpires": {
+            "type": "string",
+            "format": "date"
+          },
+          "tokens": {
+            "type": "array"
+          }
+        }
+      },
+      "Users": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/UserSchema"
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": [
+          "status",
+          "message"
+        ],
+        "properties": {
+          "status": {
+            "type": "integer",
+            "description": "HTTP status code",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "description": "Error description",
+            "example": "User created"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-access-token"
+      }
+    }
+  },
+  "tags": []
+}

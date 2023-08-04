@@ -1,0 +1,295 @@
+<div class="d-flex justify-content-end">
+  <button type="button" class="btn btn-main btn-sm mb-2 mr-2" (click)="clearAllQty()">{{'Clear All Qty' |
+    translate}}</button>
+
+  <button type="button" class="btn btn-main btn-sm mb-2 mr-2" (click)="getPDFData()">{{'Export To PDF' |
+    translate}}</button>
+
+ <!-- <button type="button" class="btn btn-main btn-sm mb-2 mr-2" (click)="getOfferOld(activeItem.name)">old {{'Offers PDF' |
+    translate}}</button>-->
+
+    <button type="button" class="btn btn-main btn-sm mb-2 mr-2" (click)="getOffer(activeItem.name, {isForCustomer: false})">{{'offer_pdf' |
+      translate}}</button>
+
+  <button type="button" class="btn btn-main btn-sm mb-2 mr-2" (click)="getOffer(activeItem.name, {isForCustomer: true})">{{'offer_customer_pdf' |
+    translate}}</button>
+
+  <button type="button" class="btn btn-main btn-sm mb-2" (click)="openMaterialForm()">{{'Add Section' |
+    translate}}</button>
+</div>
+
+<div class="row bottom-30">
+  <div class="col">
+    <div widget class="card">
+      <div class="card-header">
+        <span>{{'DATA TABLE' | translate}}</span>
+        <div class="widget-controls">
+          <a data-widgster="expand" href="#" class="transition"><i class="fa fa-chevron-down"></i></a>
+          <a data-widgster="collapse" href="#" class="transition"><i class="fa fa-chevron-up"></i></a>
+          <a data-widgster="fullscreen" href="#" class="transition"><i class="fa fa-expand"></i></a>
+          <a data-widgster="restore" href="#" class="transition"><i class="fa fa-compress"></i></a>
+          <!-- <a data-widgster="close" href="#" class="transition"><i class="fa fa-times"></i></a> -->
+        </div>
+      </div>
+      <div class="card-body position-relative widget-body">
+        <app-loader *ngIf="isLoading" class="d-flex justify-content-center"></app-loader>
+        <div *ngIf="!isLoading" class="table-responsive">
+          <table class="table table-striped mb-2 text-center">
+            <thead>
+              <tr>
+                <th></th>
+                <th style="cursor: pointer;" *ngFor='let column of columnNames;
+                let i=index' (click)='sort(columns[i] ,i)'>
+                  <i class="fa fa-arrow-up" style="color: white;"></i>
+                  {{column.title | translate}}
+                  <i class="fa fa-angle-down font-weight-bold" *ngIf='sortedColumnsIndex === i && sortAscending'
+                    aria-hidden="true"></i>
+                  <i class="fa fa-angle-up font-weight-bold" *ngIf='sortedColumnsIndex === i && !sortAscending'
+                    aria-hidden="true"></i>
+                  <i class="fa fa-arrow-up" style="color: white;" *ngIf='sortedColumnsIndex!==i'></i>
+                </th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody cdkDropList (cdkDropListDropped)="onDrop($event)" class="drag-boundary">
+              <ng-container *ngFor='let row of tableData; let i =index'>
+                <tr cdkDrag [cdkDragDisabled]='this.activeItem.division === "All"' cdkDragBoundary=".drag-boundary">
+                  <td [ngStyle]="{'cursor': row.subMaterials.length ? 'pointer' : 'normal'}">
+                    <!-- <i *ngIf='row.subMaterials.length'
+                      [ngClass]="{'fa-plus': !row.isSubMaterialVisible, 'fa-minus' : row.isSubMaterialVisible}"
+                      class="fa" aria-hidden="true"></i> -->
+
+                    <i *ngIf='row.subMaterials.length && i === visibleRowIndex' (click)="toggleSubMaterial(row , -1)"
+                      class='fa fa-chevron-up'>
+                    </i>
+                    <i *ngIf='row.subMaterials.length && i !== visibleRowIndex' (click)="toggleSubMaterial(row , i)"
+                      class='fa fa-chevron-down'>
+                    </i>
+                  </td>
+                  <td *ngFor='let column of columnNames'>
+                    <span *ngIf="!column.isEditable">{{row[column.value] | translate}}</span>
+
+                    <ng-container *ngIf="column.isEditable">
+                      <input [ngModel]="row[column.value]" class="quantity text-center" type="number" name="quantity"
+                        #quantity="ngModel" placeholder="-"
+                        (keyup.enter)="onQuantityChange(row, quantity, $event.target.value)"
+                        (blur)="onQuantityChange(row, quantity, $event.target.value)" required [min]="0">
+                      <div *ngIf="quantity.touched && quantity.errors">
+                        <span class="help-block text-danger" *ngIf="quantity.errors?.required">
+                          {{"Quantity is required" | translate}}
+                        </span>
+                        <span class="help-block text-danger" *ngIf="quantity.errors?.min">
+                          {{"Minimum value should be 0" | translate}}
+                        </span>
+                      </div>
+                    </ng-container>
+                  </td>
+
+                  <td>
+                    <i class="fa btn fa-plus" aria-hidden="true" (click)="openMaterialEditForm(row)"
+                      [tooltip]="'Add Material' | translate"></i>
+                    <i class="fa fa-pencil-square-o btn" (click)='openUpdateModal(updateMaterialModal,row)'
+                      aria-hidden="true" [tooltip]="'Edit Section' | translate"></i>
+                    <i class="fa btn fa-trash delete-icon" aria-hidden="true"
+                      (click)="openDeleteModal(deleteMaterialModal, row , false)"
+                      [tooltip]="'Delete Section' | translate"></i>
+                    <i class="fa btn fa-clone" aria-hidden="true"
+                      (click)="openDuplicateModal(duplicateMaterialModal, row , false)"
+                      [tooltip]="'Duplicate Section' | translate"></i>
+                  </td>
+                </tr>
+                <tr *ngIf='row?.subMaterials.length > 0 && i === visibleRowIndex'>
+                  <td class="pr-0 pb-0" [colSpan]='columns.length + 3'>
+                    <div class="table-responsive">
+                      <table class="table innerTable table-striped text-center">
+                        <thead>
+                          <th *ngFor='let item of subColumnNames'>
+                            {{item | translate}}
+                          </th>
+                          <th class="text-right">Action</th>
+                        </thead>
+                        <tbody>
+                          <tr style='cursor: default;' *ngFor="let subMaterial of row.subMaterials">
+                            <td *ngFor='let subMaterialColumn of subMaterialColumns'>
+                              {{subMaterialColumn == 'time' ?
+                              subMaterial[subMaterialColumn]?.minPerComponent :
+                              subMaterialColumn == 'subject' ? subMaterial['subjectDoc']?.id:
+                              subMaterial[subMaterialColumn]}}
+                              <!-- {{subMaterialColumn == 'time' ?  subMaterial[subMaterialColumn]?.minPerComponent : subMaterial[subMaterialColumn]}} -->
+
+                            </td>
+                            <td class="text-right">
+                              <i class="btn fa fa-pencil delete-icon" (click)="openSubMaterialDetails(subMaterial)"
+                                aria-hidden="true" [tooltip]="'Edit Material' | translate"></i>
+                              <ng-container *ngIf="subMaterial?.fdvDocument">
+                                <a [href]="subMaterial?.fdvDocument" downlaod><i class="btn fa fa-download"
+                                    aria-hidden="true" [tooltip]="'Download' | translate" placement="bottom"></i></a>
+                              </ng-container>
+                              <i class="btn fa fa-trash delete-icon"
+                                (click)='openDeleteModal(deleteMaterialModal , subMaterial ,true)' aria-hidden="true"
+                                [tooltip]="'Delete Material' | translate"></i>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+
+        <div class='pagination d-flex justify-content-between align-items-center'>
+          <div>
+            <select class="form-control" (change)='limitChange($event)'>
+              <ng-container *ngFor="let limit of limitOptions">
+                <option class="optionList" [ngValue]="limit">
+                  {{limit}}
+                </option>
+              </ng-container>
+            </select>
+          </div>
+          <ng-container *ngIf="currentPage && metaData?.total">
+            <pagination class="abc mb-0" [maxSize]="5" [boundaryLinks]="true" [(ngModel)]="currentPage"
+              previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;"
+              [totalItems]='metaData?.total' [itemsPerPage]='limit' (pageChanged)='pageChange($event)'></pagination>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<ng-template #deleteMaterialModal>
+  <div class="modal-header">
+    <h4 class="modal-title text-primary">{{ isDeletingSubMaterial?deleteSubMaterialName :deleteMaterialName }}</h4>
+  </div>
+
+  <div class="modal-body">
+    <span>{{'Are you sure you want to delete this?' | translate}}</span>
+  </div>
+
+  <div class="modal-footer">
+    <div class="row w-100 justify-content-end">
+      <div class="col-sm-auto px-0 mr-sm-3 mb-2">
+        <button type="button" class="btn btn-danger btn-block" (click)="deleteMaterial()">{{ 'Delete' | translate
+          }}</button>
+      </div>
+      <div class="col-sm-auto px-0">
+        <button type="button" class="btn btn-main btn-block" (click)="closeModal()">{{'Cancel' | translate }}</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+
+<ng-template #duplicateMaterialModal>
+  <div class="modal-header">
+    <h4 class="modal-title text-primary">Duplicate {{ deleteMaterialName }}</h4>
+  </div>
+
+  <div class="modal-body">
+    <div class="form-group">
+      <label for="subMaterialSel">{{'Select Category' | translate}}</label>
+      <div id="subMaterialSel">
+        <i *ngIf="isLoading" class="fa fa-circle-o-notch fa-spin fa-fw fa-lg"></i>
+        <select class="form-control" id="division" [(ngModel)]="duplicateDivision">
+          <ng-container *ngFor="let category of categoryList">
+            <option class="optionList" [ngValue]="category.value" *ngIf="category.title !== 'All'">
+              {{ category.title | translate}}
+            </option>
+          </ng-container>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <div class="row w-100 justify-content-end">
+      <div class="col-sm-auto px-0 mr-sm-3 mb-2">
+        <button type="button" class="btn btn-danger btn-block" (click)="duplicateMaterail()">{{ 'Duplicate' | translate
+          }}</button>
+      </div>
+      <div class="col-sm-auto px-0">
+        <button type="button" class="btn btn-main btn-block" (click)="closeModal()">{{'Cancel' | translate }}</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+
+
+
+<ng-template #updateMaterialModal>
+  <div class="modal-header">
+    <h4 class="modal-title text-primary">{{"Edit Section" | translate}}</h4>
+  </div>
+
+  <div class="modal-body">
+    <form [formGroup]="updateMaterialForm">
+      <div class="form-group">
+        <label for="buildingComponents">{{"Building Components" | translate}}</label>
+        <input type="text" formControlName="buildingComponents" name="buildingComponents" class="form-control"
+          [ngClass]="{
+                'is-invalid':
+                UpdateMaterialFormControls.buildingComponents.errors &&
+                UpdateMaterialFormControls.buildingComponents.touched
+              }" id="buildingComponents" [placeholder]="'Enter building components' | translate" />
+        <ng-container *ngIf="
+        UpdateMaterialFormControls.buildingComponents.errors && UpdateMaterialFormControls.buildingComponents.touched
+              ">
+          <span class="help-block text-danger" *ngIf="UpdateMaterialFormControls.buildingComponents.errors.required">
+            {{'Building components is required' | translate}}
+          </span>
+        </ng-container>
+      </div>
+
+      <div class="form-group">
+        <label>{{"Comment" | translate}}</label>
+        <textarea rows="5" class="form-control " placeholder='{{"Description" | translate }}'
+          name='material-description' formControlName="description"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="quantity">{{'Quantity' | translate}}</label>
+        <input id="quantity" class="form-control checking-field" [placeholder]="'Enter Quantity' | translate"
+          type="number" formControlName="quantity" min="0">
+        <ng-container *ngIf="UpdateMaterialFormControls.quantity.errors && UpdateMaterialFormControls.quantity.touched">
+          <span class="help-block text-danger" *ngIf="UpdateMaterialFormControls.quantity.errors.required">
+            {{'Quantity is required field' | translate}}
+          </span>
+          <span class="help-block text-danger" *ngIf="UpdateMaterialFormControls.quantity.errors.min">
+            {{'Minimum Quantity should be 0' | translate}}
+          </span>
+        </ng-container>
+      </div>
+
+      <div class="form-group">
+        <label for="subMaterialSel">{{'Select Category' | translate}}</label>
+        <div id="subMaterialSel">
+          <i *ngIf="isLoading" class="fa fa-circle-o-notch fa-spin fa-fw fa-lg"></i>
+          <select class="form-control" id="division" formControlName="division">
+            <option class="optionList" value={{category.value}} *ngFor="let category of categoryList">
+              {{ category.title | translate}}
+            </option>
+          </select>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="modal-footer">
+    <div class="row w-100 justify-content-end">
+      <div class="col-sm-auto px-0 mr-sm-3 mb-2">
+        <button type="submit" class="btn btn-main btn-block" (click)="updateMaterial()"
+          [disabled]="!updateMaterialForm.valid">{{ 'Update' | translate }}</button>
+      </div>
+      <div class="col-sm-auto px-0">
+        <button type="button" class="btn btn-danger" (click)="closeModal()">{{'Cancel' | translate }}</button>
+      </div>
+    </div>
+  </div>
+</ng-template>

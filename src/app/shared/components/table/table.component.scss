@@ -1,0 +1,39 @@
+@import "../../../../scss/table";
+
+.dashboard-text {
+  text-align: center;
+  font-size: 22px;
+}
+
+.material-description {
+  resize: none;
+  border: none;
+  border-bottom: 1px solid gray;
+}
+
+::ng-deep .my-class .modal-dialog {
+  max-width: 80%;
+  width: 80%;
+}
+
+.cdk-drop-list-dragging .cdk-drag {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+
+
+.cdk-drag-preview {
+  background-color: rgba(#344154, 0.5);
+
+  td{
+    padding: 0.75rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+    width: 1%;
+    white-space: nowrap;
+  }
+}

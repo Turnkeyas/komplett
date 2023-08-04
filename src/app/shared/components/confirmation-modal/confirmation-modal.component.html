@@ -1,0 +1,25 @@
+<div>
+    <div class="modal-header">
+        <h4 class="modal-title text-primary">{{ title | translate }}</h4>
+    </div>
+
+    <div class="modal-body">
+        <span>{{ message | translate }}</span>
+    </div>
+
+    <div class="modal-footer">
+        <div class="row w-100 justify-content-end">
+            <div class="col-6 col-sm-auto mb-2 px-0 mr-sm-3">
+                <button type="button" class="btn btn-danger btn-block" (click)="confirm()">
+                    <span *ngIf="!isLoading"> {{ confirmBtnName | translate }} </span>
+                    <i *ngIf="isLoading" class="fa fa-circle-o-notch fa-spin fa-fw fa-lg"></i>
+                </button>
+            </div>
+            <div class="col-6 col-sm-auto px-0">
+                <button type="button" class="btn btn-main btn-block" (click)="decline()">
+                    {{ 'Cancel' | translate }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

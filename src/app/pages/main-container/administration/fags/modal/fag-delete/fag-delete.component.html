@@ -1,0 +1,38 @@
+<div>
+  <div class="modal-header">
+    <h4 class="modal-title text-primary">{{'Delete' | translate}} {{ fagDetails.id}}</h4>
+  </div>
+
+  <div class="modal-body">
+    <span *ngIf="!isFagUsed">{{'Are you sure you want to delete this?' | translate}}</span>
+    <span *ngIf="isFagUsed">{{'These fag is alredy have been used' | translate}}.</span>
+
+    <ng-container *ngIf="isFagUsed && fagList && fagList.length">
+      <div class="row">
+        <div class="col pt-3">
+          <div class="form-group mb-0">
+            <label for="fagList">{{"What are these fag to be exchanged for" | translate}}?</label>
+            <select class="form-control" id="fagList" [(ngModel)]="selectedfag">
+              <option *ngFor="let fag of fagList" [ngValue]="fag">
+                {{ fag.id }}
+                &nbsp;
+                {{ fag.description }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+
+  <div class="modal-footer">
+    <div class="row w-100 justify-content-end">
+      <div class="col-6 col-sm-auto mb-2 px-0 mr-sm-3">
+        <button type="button" class="btn btn-danger btn-block" (click)="confirm()">{{ 'Delete' | translate }}</button>
+      </div>
+      <div class="col-6 col-sm-auto px-0">
+        <button type="button" class="btn btn-main btn-block" (click)="closeModal()">{{'Cancel' | translate }}</button>
+      </div>
+    </div>
+  </div>
+</div>
